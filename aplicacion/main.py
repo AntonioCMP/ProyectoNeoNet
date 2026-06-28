@@ -103,25 +103,31 @@ async def procesar_cuestionario(
     perfil = clasificador_arbol.predecir_perfil(datos)
     activos_recomendados = PORTAFOLIOS.get(perfil, [])
     
-    return templates.TemplateResponse(name="cuestionario.html", context={
-        "request": request, 
-        "resultado": perfil,
-        "activos": activos_recomendados
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="cuestionario.html", 
+        context={
+            "resultado": perfil,
+            "activos": activos_recomendados
+        }
+    )
 
 @app.get("/bot", response_class=HTMLResponse)
 async def dashboard_bot(request: Request, ticker: str = "AAPL"):
   
-    return templates.TemplateResponse(name="bot.html", context={
-        "request": request, 
-        "ticker_inicial": ticker
-    })
+    return templates.TemplateResponse(
+        request=request, 
+        name="bot.html", 
+        context={
+            "ticker_inicial": ticker
+        }
+    )
 
 @app.get("/api/bot/analizar/{ticker}")
 async def analizar_ticker(ticker: str):
+    bot_predictivo = BotInversiones(ventana_corta=5, ventana_larga=20)
     
     resultado = bot_predictivo.analizar_accion_yahoo(ticker)
-   
     auditoria = bot_predictivo.auditar_historial()
     
     return JSONResponse(content={

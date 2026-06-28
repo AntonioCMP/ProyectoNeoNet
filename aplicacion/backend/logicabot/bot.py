@@ -6,7 +6,6 @@ import pandas as pd
 
 class BotInversiones:
     def __init__(self, ventana_corta=5, ventana_larga=20):
-        # Aumentamos las ventanas para datos
         self.ventana_larga_size = ventana_larga
         self.cola_corta = deque(maxlen=ventana_corta)
         self.cola_larga = deque(maxlen=ventana_larga)
@@ -52,32 +51,33 @@ class BotInversiones:
         })
 
     def analizar_accion_yahoo(self, ticker: str, periodo="3mo"):
-        """Descarga datos de Yahoo Finance, calcula volatilidad y ejecuta el algoritmo."""
     
         datos = yf.download(ticker, period=periodo, progress=False)
         if datos.empty:
             return {"error": "No se encontraron datos para el ticker"}
 
-      
         self.cola_corta.clear()
         self.cola_larga.clear()
         self.historial_operaciones.clear()
         self.estado_tendencia = "NEUTRAL"
 
+    
+        precios_cierre = datos['Close'].squeeze()
         
-        retornos_diarios = datos['Close'].pct_change().dropna()
+        retornos_diarios = precios_cierre.pct_change().dropna()
         volatilidad = np.std(retornos_diarios) * np.sqrt(252)
 
         resultado_actual = {}
       
-        for fecha, fila in datos.iterrows():
-            precio_cierre = float(fila['Close'].iloc[0] if isinstance(fila['Close'], pd.Series) else fila['Close'])
+    
+        for fecha, precio in precios_cierre.items():
+            precio_float = float(precio)
             fecha_str = fecha.strftime('%Y-%m-%d')
-            resultado_actual = self.procesar_precio(precio_cierre, fecha_str)
+            resultado_actual = self.procesar_precio(precio_float, fecha_str)
 
         return {
             "ticker": ticker.upper(),
-            "precio_actual": round(float(datos['Close'].iloc[-1]), 2),
+            "precio_actual": round(float(precios_cierre.iloc[-1]), 2),
             "volatilidad_porcentaje": round(float(volatilidad) * 100, 2),
             "decision_actual": resultado_actual.get("decision", "ESPERANDO"),
             "media_corta": resultado_actual.get("media_corta", 0),

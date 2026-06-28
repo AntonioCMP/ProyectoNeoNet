@@ -9,31 +9,47 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
+        :root {
+            /* Tu Paleta de Colores Oficial */
+            --nn-dark-brown: #541502;
+            --nn-teal: #0685A1;
+            --nn-cyan: #05A3AE;
+            --nn-light-green: #41DD97;
+            --nn-ochre: #9A5F0B;
+            --nn-bg-gray: #E8EAE7;
+            --nn-emerald: #12956B;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f4f6f8;
+            background-color: var(--nn-bg-gray); /* Fondo claro de la paleta */
             color: #1a1f36;
         }
-        .main-title { font-weight: 700; color: #1a1f36; letter-spacing: -1px; }
+        
+        .main-title { color: var(--nn-dark-brown); font-weight: 700; letter-spacing: -0.5px; }
+        
         .glass-card {
             background: #ffffff;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border: 1px solid rgba(227, 232, 238, 0.8);
+            box-shadow: 0 10px 30px rgba(84, 21, 2, 0.08); /* Sombra basada en tu café oscuro */
+            border: 1px solid rgba(6, 133, 161, 0.1);
         }
-        .form-label { font-weight: 600; font-size: 0.9rem; color: #4f566b; }
+        
+        .form-label { font-weight: 600; font-size: 0.9rem; color: var(--nn-dark-brown); }
         .form-control, .form-select {
             border-radius: 10px;
-            border: 1px solid #e3e8ee;
+            border: 1px solid #d2d6dc;
             padding: 0.75rem 1rem;
             transition: all 0.2s;
         }
         .form-control:focus, .form-select:focus {
-            border-color: #635bff;
-            box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.1);
+            border-color: var(--nn-teal);
+            box-shadow: 0 0 0 4px rgba(6, 133, 161, 0.15);
         }
+        
         .btn-primary-custom {
-            background-color: #635bff;
+            background-color: var(--nn-teal);
+            color: white;
             border: none;
             border-radius: 10px;
             font-weight: 600;
@@ -41,27 +57,29 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
         .btn-primary-custom:hover {
-            background-color: #4a41d4;
+            background-color: var(--nn-cyan);
+            color: white;
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(99, 91, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(5, 163, 174, 0.4);
         }
-        /* Estilos de las Tarjetas de Activos */
+
+        /* Tarjetas de Activos */
         .stock-card {
             background: #ffffff;
             border-radius: 16px;
-            border: 1px solid #e3e8ee;
+            border: 1px solid #d2d6dc;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             text-decoration: none;
             color: inherit;
         }
         .stock-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
-            border-color: #d2d6dc;
+            box-shadow: 0 12px 24px rgba(6, 133, 161, 0.15);
+            border-color: var(--nn-teal);
         }
         .emoji-container {
             font-size: 2rem;
-            background: #f8f9fa;
+            background: var(--nn-bg-gray);
             border-radius: 12px;
             width: 55px;
             height: 55px;
@@ -69,25 +87,26 @@
             align-items: center;
             justify-content: center;
         }
-        .ticker-name { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
+        .ticker-name { font-weight: 700; font-size: 1.1rem; color: var(--nn-dark-brown); }
     </style>
 </head>
 <body>
     <div class="container mt-5 mb-5">
+        
         <div class="text-center mb-5">
-            <h2 class="main-title"><i class="bi bi-layers-fill text-primary me-2"></i>NeoNet Inversiones</h2>
-            <p class="text-muted">Análisis algorítmico e inteligencia artificial para tu portafolio.</p>
+            <img src="{{ logo_url }}" alt="NeoNet Logo" style="max-height: 120px;" class="mb-3 img-fluid">
+            <p class="text-muted fw-semibold">Análisis algorítmico e inteligencia artificial para tu portafolio.</p>
         </div>
         
         {% if resultado %}
-        <div class="glass-card p-4 mb-4 text-center" style="background: linear-gradient(135deg, #dcfce7 0%, #ffffff 100%); border-color: #86efac;">
-            <h4 class="mb-1 fw-bold text-success"><i class="bi bi-shield-check me-2"></i>Análisis Completado</h4>
-            <p class="mb-0 fs-5 text-dark">Tu perfil de inversor es: <span class="badge bg-success rounded-pill px-3 py-2 fs-6 shadow-sm">{{ resultado }}</span></p>
+        <div class="glass-card p-4 mb-4 text-center" style="background: linear-gradient(135deg, rgba(65, 221, 151, 0.1) 0%, #ffffff 100%); border-left: 5px solid var(--nn-emerald);">
+            <h4 class="mb-1 fw-bold" style="color: var(--nn-emerald);"><i class="bi bi-shield-check me-2"></i>Análisis Completado</h4>
+            <p class="mb-0 fs-5 text-dark">Tu perfil de inversor es: <span class="badge rounded-pill px-3 py-2 fs-6 shadow-sm" style="background-color: var(--nn-emerald);">{{ resultado }}</span></p>
         </div>
 
         <div class="glass-card p-4 mb-5">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-wallet2 me-2 text-primary"></i>Activos Recomendados</h5>
+                <h5 class="fw-bold mb-0 main-title"><i class="bi bi-wallet2 me-2" style="color: var(--nn-teal);"></i>Activos Recomendados</h5>
                 <a href="/" class="btn btn-sm btn-outline-secondary rounded-pill fw-semibold"><i class="bi bi-arrow-repeat me-1"></i>Rehacer Test</a>
             </div>
             <p class="text-muted small mb-4">Haz clic en cualquier activo para que nuestro bot evalúe el mercado en tiempo real mediante cruces de medias móviles.</p>
@@ -100,10 +119,10 @@
                             {{ activo.emoji }}
                         </div>
                         <div>
-                            <div class="ticker-name text-dark mb-0">{{ activo.ticker }}</div>
+                            <div class="ticker-name mb-0">{{ activo.ticker }}</div>
                             <div class="text-secondary small fw-semibold" style="line-height: 1.1;">{{ activo.nombre }}</div>
                         </div>
-                        <i class="bi bi-chevron-right ms-auto text-muted opacity-50"></i>
+                        <i class="bi bi-chevron-right ms-auto opacity-50" style="color: var(--nn-teal);"></i>
                     </a>
                 </div>
                 {% endfor %}
@@ -112,7 +131,7 @@
         {% else %}
 
         <div class="glass-card p-4 p-md-5 mx-auto" style="max-width: 650px;">
-            <h4 class="fw-bold mb-4 text-center border-bottom pb-3">Perfilamiento de Riesgo</h4>
+            <h4 class="fw-bold mb-4 text-center border-bottom pb-3 main-title">Perfilamiento de Riesgo</h4>
             <form action="/predecir_perfil" method="POST">
                 
                 <div class="row">
@@ -176,8 +195,8 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary-custom w-100 text-white fs-5 mt-2">
-                    <i class="bi bi-magic me-2"></i>Generar Portafolio
+                <button type="submit" class="btn btn-primary-custom w-100 fs-5 mt-2">
+                    <i class="bi bi-cpu-fill me-2"></i>Generar Portafolio
                 </button>
             </form>
         </div>

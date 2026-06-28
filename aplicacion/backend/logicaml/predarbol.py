@@ -1,9 +1,13 @@
 
+import os
 import pandas as pd
 import pickle
 
 class ModeloInversor:
-    def __init__(self, ruta_modelo="D:\\DocumentosI\\EDUCATIVA+\\4to Semestre\\ProyectoNeoNet\\EntrenamientoBosque\\modelo_xgboost.pickle"):
+    def __init__(self, ruta_modelo=None):
+        if ruta_modelo is None:
+            ruta_modelo = os.getenv("MODEL_PATH")
+
         with open(ruta_modelo, "rb") as f:
             datos_cargados = pickle.load(f)
   

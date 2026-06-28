@@ -8,9 +8,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* Paleta Oficial NeoNet */
+            --nn-dark-brown: #541502;
+            --nn-teal: #0685A1;
+            --nn-cyan: #05A3AE;
+            --nn-light-green: #41DD97; /* Usado para COMPRAR */
+            --nn-ochre: #9A5F0B;      /* Usado para VENDER */
+            --nn-emerald: #12956B;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #121212; /* Dark mode profundo */
+            background-color: #121212; 
             color: #e0e0e0;
         }
         .terminal-header { border-bottom: 1px solid #2d2d2d; background-color: #1a1a1a; }
@@ -18,9 +28,9 @@
         .btn-back:hover { background-color: #404040; color: #fff; }
         
         .search-box { background: #1e1e1e; border: 1px solid #333; color: white; border-radius: 8px; }
-        .search-box:focus { background: #1e1e1e; color: white; border-color: #635bff; box-shadow: none; }
-        .btn-analyze { background-color: #635bff; color: white; border: none; font-weight: 600; }
-        .btn-analyze:hover { background-color: #534be0; color: white; }
+        .search-box:focus { background: #1e1e1e; color: white; border-color: var(--nn-teal); box-shadow: none; }
+        .btn-analyze { background-color: var(--nn-teal); color: white; border: none; font-weight: 600; }
+        .btn-analyze:hover { background-color: var(--nn-cyan); color: white; }
 
         .dashboard-panel {
             background-color: #1a1a1a;
@@ -32,27 +42,28 @@
         .metric-label { font-size: 0.85rem; color: #888; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .metric-value { font-size: 1.5rem; font-weight: 700; color: #fff; }
         
-        /* Colores Financieros */
-        .text-buy { color: #00c805 !important; } /* Verde Robinhood */
-        .text-sell { color: #ff5000 !important; } /* Rojo */
-        .text-neutral { color: #f5a623 !important; } /* Naranja */
+        /* Colores Dinámicos usando tu paleta */
+        .text-buy { color: var(--nn-light-green) !important; } 
+        .text-sell { color: var(--nn-ochre) !important; } 
+        .text-neutral { color: var(--nn-cyan) !important; } 
 
         .history-list { max-height: 400px; overflow-y: auto; }
         .history-list::-webkit-scrollbar { width: 6px; }
         .history-list::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
-        
         .history-item { border-bottom: 1px solid #2d2d2d; padding: 12px 0; }
         .history-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
 
-    <div class="terminal-header py-3 mb-4">
+    <div class="terminal-header py-2 mb-4 shadow-sm">
         <div class="container d-flex justify-content-between align-items-center">
             <button onclick="history.back()" class="btn btn-back rounded-pill px-3 py-1 btn-sm fw-semibold">
                 <i class="bi bi-arrow-left me-1"></i> Portafolio
             </button>
-            <h5 class="mb-0 fw-bold text-white"><i class="bi bi-robot text-primary me-2"></i>NeoNet Bot API</h5>
+            
+            <img src="{{ logo_url }}" alt="NeoNet Logo" style="height: 45px; object-fit: contain;">
+            
             <div style="width: 100px;"></div> </div>
     </div>
 
@@ -62,23 +73,23 @@
                 <div class="input-group input-group-lg shadow-sm">
                     <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-search"></i></span>
                     <input type="text" id="tickerInput" class="form-control search-box" value="{{ ticker_inicial }}" placeholder="Ej. AAPL, TSLA, SPY">
-                    <button class="btn btn-analyze px-4" onclick="analizarTicker()">Analizar</button>
+                    <button class="btn btn-analyze px-4" onclick="analizarTicker()">Analizar M.M.</button>
                 </div>
             </div>
         </div>
 
         <div id="loading" style="display:none;" class="text-center py-5">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
-            <h5 class="mt-3 text-muted">Ejecutando algoritmo en Yahoo Finance...</h5>
+            <div class="spinner-border" style="color: var(--nn-teal); width: 3rem; height: 3rem;" role="status"></div>
+            <h5 class="mt-3 text-muted">Conectando con el mercado...</h5>
         </div>
 
         <div class="row g-4" id="botDashboard" style="display:none;">
             
             <div class="col-lg-5">
-                <div class="dashboard-panel p-4 h-100">
+                <div class="dashboard-panel p-4 h-100 border-top" style="border-top-color: var(--nn-teal) !important; border-top-width: 4px !important;">
                     <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
                         <h4 class="fw-bold mb-0 text-white" id="resTicker">TICKER</h4>
-                        <span class="badge bg-secondary text-light">Tiempo Real</span>
+                        <span class="badge" style="background-color: var(--nn-dark-brown);">Tiempo Real</span>
                     </div>
 
                     <div class="row g-3 mb-4">
@@ -87,21 +98,21 @@
                             <div class="metric-value">$<span id="resPrecio">0.00</span></div>
                         </div>
                         <div class="col-6">
-                            <div class="metric-label">Volatilidad (Anual)</div>
+                            <div class="metric-label">Volatilidad Anual</div>
                             <div class="metric-value"><span id="resVol">0</span>%</div>
                         </div>
                         <div class="col-6">
-                            <div class="metric-label">M. Móvil Corta (5d)</div>
-                            <div class="metric-value fs-4 text-info">$<span id="resMcorta">0.00</span></div>
+                            <div class="metric-label">Media Corta (5d)</div>
+                            <div class="metric-value fs-4" style="color: var(--nn-cyan);">$<span id="resMcorta">0.00</span></div>
                         </div>
                         <div class="col-6">
-                            <div class="metric-label">M. Móvil Larga (20d)</div>
-                            <div class="metric-value fs-4 text-primary">$<span id="resMlarga">0.00</span></div>
+                            <div class="metric-label">Media Larga (20d)</div>
+                            <div class="metric-value fs-4" style="color: var(--nn-emerald);">$<span id="resMlarga">0.00</span></div>
                         </div>
                     </div>
 
                     <div class="p-4 rounded-3 text-center mt-auto" style="background-color: rgba(255,255,255,0.03);">
-                        <div class="metric-label mb-2">Decisión del Algoritmo</div>
+                        <div class="metric-label mb-2">Señal del Algoritmo</div>
                         <h1 id="resDecision" class="display-5 fw-bold mb-0">ESPERANDO</h1>
                     </div>
                 </div>
@@ -109,13 +120,11 @@
 
             <div class="col-lg-7">
                 <div class="dashboard-panel p-4 h-100">
-                    <h5 class="fw-bold mb-3 border-bottom border-secondary pb-3"><i class="bi bi-clock-history me-2"></i>Historial de Cruces de Medias</h5>
+                    <h5 class="fw-bold mb-3 border-bottom border-secondary pb-3" style="color: var(--nn-bg-gray);"><i class="bi bi-clock-history me-2" style="color: var(--nn-teal);"></i>Auditoría de Cruces</h5>
                     
-                    <div class="history-list pe-2" id="listaHistorial">
-                        </div>
+                    <div class="history-list pe-2" id="listaHistorial"></div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -124,8 +133,6 @@
             if(document.getElementById('tickerInput').value) {
                 analizarTicker();
             }
-            
-            // Permitir presionar "Enter" para buscar
             document.getElementById('tickerInput').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') analizarTicker();
             });
@@ -149,7 +156,6 @@
                     return;
                 }
 
-                // Llenar Datos Panel Izquierdo
                 document.getElementById('resTicker').innerText = data.analisis.ticker;
                 document.getElementById('resPrecio').innerText = data.analisis.precio_actual;
                 document.getElementById('resVol').innerText = data.analisis.volatilidad_porcentaje;
@@ -160,40 +166,38 @@
                 const decisionElement = document.getElementById('resDecision');
                 decisionElement.innerText = dec;
                 
-                // Colores para la decisión
                 decisionElement.className = 'display-5 fw-bold mb-0 ';
                 if(dec === 'COMPRAR') decisionElement.className += 'text-buy';
                 else if(dec === 'VENDER') decisionElement.className += 'text-sell';
                 else decisionElement.className += 'text-neutral';
 
-                // Llenar Datos Panel Derecho (Historial)
                 const historial = data.auditoria;
                 const lista = document.getElementById('listaHistorial');
                 
                 if(historial.length === 0) {
-                    lista.innerHTML = '<div class="text-center text-muted mt-5 py-4"><i class="bi bi-inbox fs-1 d-block mb-2"></i>Sin cruces de medias recientes en el periodo analizado.</div>';
+                    lista.innerHTML = '<div class="text-center text-muted mt-5 py-4"><i class="bi bi-activity fs-1 d-block mb-2"></i>Sin cruces de medias recientes.</div>';
                 } else {
                     historial.reverse().forEach(op => { 
                         const isBuy = op.tipo === 'COMPRA';
                         const colorClass = isBuy ? 'text-buy' : 'text-sell';
-                        const iconClass = isBuy ? 'bi-arrow-up-right-circle-fill' : 'bi-arrow-down-right-circle-fill';
-                        const bgColor = isBuy ? 'rgba(0, 200, 5, 0.1)' : 'rgba(255, 80, 0, 0.1)';
+                        const iconClass = isBuy ? 'bi-graph-up-arrow' : 'bi-graph-down-arrow';
+                        const bgColor = isBuy ? 'rgba(65, 221, 151, 0.1)' : 'rgba(154, 95, 11, 0.1)'; // Usando los RGB de tu paleta
 
                         const div = document.createElement('div');
                         div.className = "history-item d-flex justify-content-between align-items-center";
                         div.innerHTML = `
                             <div class="d-flex align-items-center">
                                 <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: ${bgColor};">
-                                    <i class="bi ${iconClass} fs-4 ${colorClass}"></i>
+                                    <i class="bi ${iconClass} fs-5 ${colorClass}"></i>
                                 </div>
                                 <div>
                                     <h6 class="mb-0 fw-bold ${colorClass}">${op.tipo} a $${op.precio}</h6>
-                                    <small class="text-muted"><i class="bi bi-calendar-event me-1"></i>${op.fecha}</small>
+                                    <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>${op.fecha}</small>
                                 </div>
                             </div>
                             <div class="text-end small text-muted">
-                                <div>M. Corta: <span class="text-info fw-semibold">$${op.media_corta}</span></div>
-                                <div>M. Larga: <span class="text-primary fw-semibold">$${op.media_larga}</span></div>
+                                <div>M. Corta: <span style="color: var(--nn-cyan); font-weight: 600;">$${op.media_corta}</span></div>
+                                <div>M. Larga: <span style="color: var(--nn-emerald); font-weight: 600;">$${op.media_larga}</span></div>
                             </div>
                         `;
                         lista.appendChild(div);
@@ -203,7 +207,7 @@
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('botDashboard').style.display = 'flex';
             } catch (error) {
-                alert("Error al conectar con el servidor.");
+                alert("Error de conexión.");
                 document.getElementById('loading').style.display = 'none';
             }
         }

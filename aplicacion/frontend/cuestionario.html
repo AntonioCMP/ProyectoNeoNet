@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cuestionario de Perfil de Inversor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5 mb-5">
+        <h2 class="text-center text-primary mb-4">Descubre tu Perfil de Inversor</h2>
+        
+        {% if resultado %}
+        <div class="alert alert-success text-center shadow-sm">
+            <h4>¡Análisis completado!</h4>
+            <p>El algoritmo Random Forest determinó que tu perfil es: <strong class="fs-4">{{ resultado }}</strong></p>
+            
+            <hr>
+            <h5>Recomendaciones de Inversión (En base a tu perfil y volatilidad)</h5>
+            <p class="text-muted small">Selecciona un activo para que nuestro Bot evalúe si es un buen momento de compra según su cruce de medias móviles:</p>
+            
+            <div class="border rounded bg-white p-3" style="max-height: 300px; overflow-y: auto;">
+                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                    {% for activo in activos %}
+                        <a href="/bot?ticker={{ activo.ticker }}" class="btn btn-outline-dark text-start shadow-sm" style="width: 250px;">
+                            <strong class="text-primary">{{ activo.ticker }}</strong> <br>
+                            <small class="text-secondary">{{ activo.nombre }}</small>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <a href="/" class="btn btn-link mt-3">Volver a realizar el cuestionario</a>
+        </div>
+        {% endif %}
+
+        <div class="card shadow p-4">
+            <form action="/predecir_perfil" method="POST">
+                
+                <div class="mb-3">
+                    <label>¿Cuál es tu género?</label>
+                    <select name="gender" class="form-select" required>
+                        <option value="Male">Masculino</option>
+                        <option value="Female">Femenino</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>¿Cuál es tu edad?</label>
+                    <input type="number" name="age" class="form-control" required min="18" max="100">
+                </div>
+
+                <div class="mb-3">
+                    <label>¿Qué factor es más importante para ti al invertir?</label>
+                    <select name="factor" class="form-select" required>
+                        <option value="Returns">Retornos (Ganancias)</option>
+                        <option value="Risk">Nivel de Riesgo</option>
+                        <option value="Locking Period">Periodo de bloqueo (Liquidez)</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>¿Cuál es tu objetivo de inversión principal?</label>
+                    <select name="objective" class="form-select" required>
+                        <option value="Capital Appreciation">Apreciación del Capital</option>
+                        <option value="Growth">Crecimiento a largo plazo</option>
+                        <option value="Income">Generación de Ingresos</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>¿Cuál es el propósito de tus ahorros?</label>
+                    <select name="purpose" class="form-select" required>
+                        <option value="Wealth Creation">Creación de Riqueza</option>
+                        <option value="Savings for Future">Ahorros para el Futuro</option>
+                        <option value="Returns">Generar Retornos inmediatos</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>¿Por cuánto tiempo planeas invertir tu dinero?</label>
+                    <select name="duration" class="form-select" required>
+                        <option value="Less than 1 year">Menos de 1 año</option>
+                        <option value="1-3 years">De 1 a 3 años</option>
+                        <option value="3-5 years">De 3 a 5 años</option>
+                        <option value="More than 5 years">Más de 5 años</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label>¿Qué porcentaje de rendimiento esperas anualmente?</label>
+                    <select name="expect" class="form-select" required>
+                        <option value="10%-20%">Entre 10% y 20%</option>
+                        <option value="20%-30%">Entre 20% y 30%</option>
+                        <option value="30%-40%">Entre 30% y 40%</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Obtener Recomendación</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -25,12 +25,12 @@ class BotInversiones:
 
         decision = "MANTENER"
         
-        if media_corta > media_larga and self.estado_tendencia != "ALCISTA":
+        if media_corta > media_larga or self.estado_tendencia != "ALCISTA":
             decision = "COMPRAR"
             self.estado_tendencia = "ALCISTA"
             self._registrar_operacion("COMPRA", precio, media_corta, media_larga, fecha)
             
-        elif media_corta < media_larga and self.estado_tendencia != "BAJISTA":
+        elif media_corta < media_larga or self.estado_tendencia != "BAJISTA":
             decision = "VENDER"
             self.estado_tendencia = "BAJISTA"
             self._registrar_operacion("VENTA", precio, media_corta, media_larga, fecha)

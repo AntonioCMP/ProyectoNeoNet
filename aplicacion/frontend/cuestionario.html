@@ -1,16 +1,18 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="NeoNet — Descubre tu perfil de inversor con análisis algorítmico e inteligencia artificial.">
     <title>NeoNet | Descubre tu Perfil</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230685A1'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>N</text></svg>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            /* Tu Paleta de Colores Oficial */
+            /* Paleta oficial NeoNet */
             --nn-dark-brown: #541502;
             --nn-teal: #0685A1;
             --nn-cyan: #05A3AE;
@@ -18,188 +20,372 @@
             --nn-ochre: #9A5F0B;
             --nn-bg-gray: #E8EAE7;
             --nn-emerald: #12956B;
+
+            --nn-ink: #1a1f36;
+            --nn-radius: 18px;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--nn-bg-gray); /* Fondo claro de la paleta */
-            color: #1a1f36;
+            color: var(--nn-ink);
+            background-color: var(--nn-bg-gray);
+            background-image:
+                radial-gradient(ellipse 60% 40% at 85% -5%, rgba(6, 133, 161, 0.12), transparent 60%),
+                radial-gradient(ellipse 50% 35% at 5% 100%, rgba(65, 221, 151, 0.12), transparent 60%);
+            background-attachment: fixed;
+            min-height: 100vh;
         }
-        
-        .main-title { color: var(--nn-dark-brown); font-weight: 700; letter-spacing: -0.5px; }
-        
+
+        /* ── Barra de modo (identidad claro/oscuro intencional) ───────── */
+        .mode-bar {
+            background: #ffffff;
+            border-bottom: 1px solid rgba(84, 21, 2, 0.08);
+        }
+        .mode-chip {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--nn-teal);
+            background: rgba(6, 133, 161, 0.09);
+            border: 1px solid rgba(6, 133, 161, 0.25);
+            border-radius: 999px;
+            padding: 0.3rem 0.85rem;
+        }
+        .mode-chip .dot {
+            display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+            background: var(--nn-light-green); margin-right: 0.4rem;
+            box-shadow: 0 0 0 3px rgba(65, 221, 151, 0.25);
+        }
+
+        .main-title { color: var(--nn-dark-brown); font-weight: 800; letter-spacing: -0.5px; }
+        .lead-sub { color: #5a6072; font-weight: 500; max-width: 520px; margin: 0 auto; }
+
         .glass-card {
             background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(84, 21, 2, 0.08); /* Sombra basada en tu café oscuro */
-            border: 1px solid rgba(6, 133, 161, 0.1);
+            border-radius: var(--nn-radius);
+            box-shadow: 0 14px 40px rgba(84, 21, 2, 0.08);
+            border: 1px solid rgba(6, 133, 161, 0.10);
         }
-        
-        .form-label { font-weight: 600; font-size: 0.9rem; color: var(--nn-dark-brown); }
+
+        /* ── Wizard ────────────────────────────────────────────────────── */
+        .wizard-progress {
+            display: flex; gap: 6px; margin-bottom: 0.6rem;
+        }
+        .wizard-progress span {
+            height: 5px; flex: 1; border-radius: 999px;
+            background: rgba(6, 133, 161, 0.15);
+        }
+        .wizard-progress span.done { background: linear-gradient(90deg, var(--nn-teal), var(--nn-cyan)); }
+        .wizard-progress-label {
+            font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--nn-teal);
+        }
+
+        .field-group {
+            border: 1px solid rgba(6, 133, 161, 0.12);
+            border-radius: 14px;
+            padding: 1.25rem 1.25rem 0.5rem;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(180deg, rgba(232, 234, 231, 0.35), #fff 40%);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .field-group:focus-within {
+            border-color: var(--nn-teal);
+            box-shadow: 0 0 0 4px rgba(6, 133, 161, 0.08);
+        }
+        .field-group-title {
+            display: flex; align-items: center; gap: 0.55rem;
+            font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--nn-ochre);
+            margin-bottom: 1rem;
+        }
+        .field-group-title .fg-icon {
+            width: 30px; height: 30px; border-radius: 9px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(154, 95, 11, 0.1); color: var(--nn-ochre); font-size: 0.95rem;
+        }
+
+        .form-label {
+            font-weight: 600; font-size: 0.88rem; color: var(--nn-dark-brown);
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .form-label .bi { color: var(--nn-teal); font-size: 0.95rem; }
+
         .form-control, .form-select {
             border-radius: 10px;
             border: 1px solid #d2d6dc;
-            padding: 0.75rem 1rem;
-            transition: all 0.2s;
+            padding: 0.7rem 1rem;
+            font-weight: 500;
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
         }
+        .form-control:hover, .form-select:hover { border-color: var(--nn-cyan); }
         .form-control:focus, .form-select:focus {
             border-color: var(--nn-teal);
             box-shadow: 0 0 0 4px rgba(6, 133, 161, 0.15);
         }
-        
+
         .btn-primary-custom {
-            background-color: var(--nn-teal);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            padding: 0.8rem;
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: linear-gradient(135deg, var(--nn-teal), var(--nn-cyan));
+            color: #fff; border: none; border-radius: 12px;
+            font-weight: 700; padding: 0.9rem; letter-spacing: 0.01em;
+            transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
         }
-        .btn-primary-custom:hover {
-            background-color: var(--nn-cyan);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(5, 163, 174, 0.4);
+        .btn-primary-custom:hover, .btn-primary-custom:focus {
+            color: #fff; transform: translateY(-2px); filter: brightness(1.05);
+            box-shadow: 0 8px 22px rgba(5, 163, 174, 0.4);
+        }
+        .btn-primary-custom:focus-visible { outline: 3px solid rgba(6,133,161,.4); outline-offset: 2px; }
+
+        /* ── Resultado ─────────────────────────────────────────────────── */
+        .result-banner {
+            background:
+                radial-gradient(circle at 12% 20%, rgba(65, 221, 151, 0.16), transparent 45%),
+                linear-gradient(135deg, rgba(18, 149, 107, 0.06), #ffffff 60%);
+            border-left: 5px solid var(--nn-emerald);
+            animation: fadeUp 0.5s ease both;
+        }
+        .result-icon {
+            width: 74px; height: 74px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, var(--nn-emerald), var(--nn-light-green));
+            color: #fff; font-size: 2rem;
+            box-shadow: 0 10px 25px rgba(18, 149, 107, 0.35);
+        }
+        .profile-badge {
+            background: var(--nn-emerald) !important;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.05em;
         }
 
-        /* Tarjetas de Activos */
+        /* ── Tarjetas de activos ───────────────────────────────────────── */
         .stock-card {
             background: #ffffff;
             border-radius: 16px;
-            border: 1px solid #d2d6dc;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid #d9dde2;
+            transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.25s, border-color 0.25s;
             text-decoration: none;
             color: inherit;
+            position: relative;
+            overflow: hidden;
         }
-        .stock-card:hover {
+        .stock-card::before {
+            content: ""; position: absolute; inset: 0 auto 0 0; width: 4px;
+            background: linear-gradient(180deg, var(--nn-teal), var(--nn-light-green));
+            opacity: 0; transition: opacity 0.25s;
+        }
+        .stock-card:hover, .stock-card:focus-visible {
             transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(6, 133, 161, 0.15);
+            box-shadow: 0 14px 30px rgba(6, 133, 161, 0.18);
             border-color: var(--nn-teal);
+            color: inherit;
         }
+        .stock-card:hover::before { opacity: 1; }
+        .stock-card:hover .stock-cta { transform: translateX(3px); color: var(--nn-teal); }
+
         .emoji-container {
-            font-size: 2rem;
+            font-size: 1.9rem;
             background: var(--nn-bg-gray);
+            border: 1px solid rgba(84, 21, 2, 0.06) !important;
             border-radius: 12px;
-            width: 55px;
-            height: 55px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 55px; height: 55px; flex: 0 0 55px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .ticker-name { font-weight: 700; font-size: 1.1rem; color: var(--nn-dark-brown); }
+        .ticker-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700; font-size: 1.05rem; color: var(--nn-dark-brown);
+            letter-spacing: 0.02em;
+        }
+        .risk-tag {
+            font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--nn-emerald);
+            background: rgba(18, 149, 107, 0.1);
+            border-radius: 999px; padding: 0.15rem 0.55rem;
+        }
+        .stock-cta { transition: transform 0.25s, color 0.25s; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.5s ease both; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
     </style>
 </head>
 <body>
-    <div class="container mt-5 mb-5">
-        
-        <div class="text-center mb-5">
-            <img src="{{ logo_url }}" alt="NeoNet Logo" style="max-height: 120px;" class="mb-3 img-fluid">
-            <p class="text-muted fw-semibold">Análisis algorítmico e inteligencia artificial para tu portafolio.</p>
-        </div>
-        
-        {% if resultado %}
-        <div class="glass-card p-4 mb-4 text-center" style="background: linear-gradient(135deg, rgba(65, 221, 151, 0.1) 0%, #ffffff 100%); border-left: 5px solid var(--nn-emerald);">
-            <h4 class="mb-1 fw-bold" style="color: var(--nn-emerald);"><i class="bi bi-shield-check me-2"></i>Análisis Completado</h4>
-            <p class="mb-0 fs-5 text-dark">Tu perfil de inversor es: <span class="badge rounded-pill px-3 py-2 fs-6 shadow-sm" style="background-color: var(--nn-emerald);">{{ resultado }}</span></p>
-        </div>
 
-        <div class="glass-card p-4 mb-5">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold mb-0 main-title"><i class="bi bi-wallet2 me-2" style="color: var(--nn-teal);"></i>Activos Recomendados</h5>
-                <a href="/" class="btn btn-sm btn-outline-secondary rounded-pill fw-semibold"><i class="bi bi-arrow-repeat me-1"></i>Rehacer Test</a>
+    <!-- Barra de modo: refuerza que esta vista es el "modo asesor" (claro) -->
+    <div class="mode-bar py-2 mb-4">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span class="mode-chip"><span class="dot" aria-hidden="true"></span>Modo Asesor</span>
+            <span class="text-muted small fw-semibold d-none d-sm-inline">NeoNet · Perfilamiento inteligente</span>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+
+        <header class="text-center mb-5 fade-up">
+            <img src="{{ logo_url }}" alt="NeoNet Logo" style="max-height: 110px;" class="mb-3 img-fluid">
+            <p class="lead-sub">Análisis algorítmico e inteligencia artificial para tu portafolio.</p>
+        </header>
+
+        {% if resultado %}
+        <section class="glass-card result-banner p-4 p-md-5 mb-4 text-center" aria-labelledby="resultado-titulo">
+            <div class="result-icon mb-3" aria-hidden="true"><i class="bi bi-shield-check"></i></div>
+            <h4 id="resultado-titulo" class="mb-2 fw-bold" style="color: var(--nn-emerald);">Análisis Completado</h4>
+            <p class="mb-2 fs-5 text-dark">Tu perfil de inversor es:
+                <span class="badge rounded-pill px-3 py-2 fs-6 shadow-sm profile-badge">{{ resultado }}</span>
+            </p>
+            <p class="text-muted small mb-0 mx-auto" style="max-width: 480px;">
+                Este perfil se calculó a partir de tus respuestas y determina el nivel de riesgo,
+                horizonte y tipo de activos que verás a continuación.
+            </p>
+        </section>
+
+        <section class="glass-card p-4 p-md-5 mb-5 fade-up" aria-labelledby="activos-titulo">
+            <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+                <h5 id="activos-titulo" class="fw-bold mb-0 main-title">
+                    <i class="bi bi-wallet2 me-2" style="color: var(--nn-teal);"></i>Activos Recomendados
+                </h5>
+                <a href="/" class="btn btn-sm btn-outline-secondary rounded-pill fw-semibold">
+                    <i class="bi bi-arrow-repeat me-1"></i>Rehacer Test
+                </a>
             </div>
-            <p class="text-muted small mb-4">Haz clic en cualquier activo para que nuestro bot evalúe el mercado en tiempo real mediante cruces de medias móviles.</p>
-            
+            <p class="text-muted small mb-4">
+                Haz clic en cualquier activo para que nuestro bot evalúe el mercado en tiempo real
+                mediante cruces de medias móviles.
+            </p>
+
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                 {% for activo in activos %}
                 <div class="col">
-                    <a href="/bot?ticker={{ activo.ticker }}" class="card h-100 stock-card d-flex flex-row align-items-center p-3">
-                        <div class="emoji-container me-3 border">
+                    <a href="/bot?ticker={{ activo.ticker }}" class="card h-100 stock-card d-flex flex-row align-items-center p-3"
+                       aria-label="Analizar {{ activo.ticker }} en la terminal">
+                        <div class="emoji-container me-3 border" aria-hidden="true">
                             {{ activo.emoji }}
                         </div>
-                        <div>
-                            <div class="ticker-name mb-0">{{ activo.ticker }}</div>
-                            <div class="text-secondary small fw-semibold" style="line-height: 1.1;">{{ activo.nombre }}</div>
+                        <div class="me-2">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="ticker-name">{{ activo.ticker }}</span>
+                                <span class="risk-tag">Perfil {{ resultado }}</span>
+                            </div>
+                            <div class="text-secondary small fw-semibold" style="line-height: 1.2;">{{ activo.nombre }}</div>
                         </div>
-                        <i class="bi bi-chevron-right ms-auto opacity-50" style="color: var(--nn-teal);"></i>
+                        <i class="bi bi-chevron-right ms-auto stock-cta opacity-75" style="color: var(--nn-teal);" aria-hidden="true"></i>
                     </a>
                 </div>
                 {% endfor %}
             </div>
-        </div>
+        </section>
         {% else %}
 
-        <div class="glass-card p-4 p-md-5 mx-auto" style="max-width: 650px;">
-            <h4 class="fw-bold mb-4 text-center border-bottom pb-3 main-title">Perfilamiento de Riesgo</h4>
+        <section class="glass-card p-4 p-md-5 mx-auto fade-up" style="max-width: 680px;" aria-labelledby="form-titulo">
+
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="wizard-progress-label">Paso 1 de 2 · Cuestionario</span>
+                    <span class="wizard-progress-label text-muted" style="color:#8a8f9c !important;">Luego: Portafolio</span>
+                </div>
+                <div class="wizard-progress" role="img" aria-label="Progreso: paso 1 de 2">
+                    <span class="done"></span><span></span>
+                </div>
+            </div>
+
+            <h4 id="form-titulo" class="fw-bold mb-1 main-title">Perfilamiento de Riesgo</h4>
+            <p class="text-muted small mb-4">Siete respuestas rápidas. Nuestro modelo hace el resto.</p>
+
             <form action="/predecir_perfil" method="POST">
-                
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Género</label>
-                        <select name="gender" class="form-select" required>
-                            <option value="Male">Masculino</option>
-                            <option value="Female">Femenino</option>
+
+                <!-- Grupo 1: Sobre ti -->
+                <div class="field-group">
+                    <div class="field-group-title">
+                        <span class="fg-icon"><i class="bi bi-person-fill"></i></span> Sobre ti
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="f-gender"><i class="bi bi-gender-ambiguous"></i>Género</label>
+                            <select id="f-gender" name="gender" class="form-select" required>
+                                <option value="Male">Masculino</option>
+                                <option value="Female">Femenino</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="f-age"><i class="bi bi-calendar-heart"></i>Edad</label>
+                            <input id="f-age" type="number" name="age" class="form-control" placeholder="Ej: 25" required min="18" max="100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grupo 2: Tus prioridades -->
+                <div class="field-group">
+                    <div class="field-group-title">
+                        <span class="fg-icon"><i class="bi bi-bullseye"></i></span> Tus prioridades
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="f-factor"><i class="bi bi-sliders"></i>¿Qué factor es más importante para ti?</label>
+                        <select id="f-factor" name="factor" class="form-select" required>
+                            <option value="Returns">Retornos (Ganancias altas)</option>
+                            <option value="Risk">Minimizar el Riesgo</option>
+                            <option value="Locking Period">Liquidez inmediata</option>
                         </select>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Edad</label>
-                        <input type="number" name="age" class="form-control" placeholder="Ej: 25" required min="18" max="100">
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">¿Qué factor es más importante para ti?</label>
-                    <select name="factor" class="form-select" required>
-                        <option value="Returns">Retornos (Ganancias altas)</option>
-                        <option value="Risk">Minimizar el Riesgo</option>
-                        <option value="Locking Period">Liquidez inmediata</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Objetivo de inversión principal</label>
-                    <select name="objective" class="form-select" required>
-                        <option value="Capital Appreciation">Apreciación del Capital</option>
-                        <option value="Growth">Crecimiento a largo plazo</option>
-                        <option value="Income">Generación de Ingresos pasivos</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Propósito de tus fondos</label>
-                    <select name="purpose" class="form-select" required>
-                        <option value="Wealth Creation">Creación de Riqueza</option>
-                        <option value="Savings for Future">Ahorros para el Futuro</option>
-                        <option value="Returns">Generar retornos inmediatos</option>
-                    </select>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Horizonte de tiempo</label>
-                        <select name="duration" class="form-select" required>
-                            <option value="Less than 1 year">Menos de 1 año</option>
-                            <option value="1-3 years">1 a 3 años</option>
-                            <option value="3-5 years">3 a 5 años</option>
-                            <option value="More than 5 years">Más de 5 años</option>
+                    <div class="mb-3">
+                        <label class="form-label" for="f-objective"><i class="bi bi-graph-up"></i>Objetivo de inversión principal</label>
+                        <select id="f-objective" name="objective" class="form-select" required>
+                            <option value="Capital Appreciation">Apreciación del Capital</option>
+                            <option value="Growth">Crecimiento a largo plazo</option>
+                            <option value="Income">Generación de Ingresos pasivos</option>
                         </select>
                     </div>
-                    <div class="col-md-6 mb-4">
-                        <label class="form-label">Rendimiento esperado</label>
-                        <select name="expect" class="form-select" required>
-                            <option value="10%-20%">10% - 20% anual</option>
-                            <option value="20%-30%">20% - 30% anual</option>
-                            <option value="30%-40%">30% - 40% anual</option>
+                    <div class="mb-3">
+                        <label class="form-label" for="f-purpose"><i class="bi bi-piggy-bank"></i>Propósito de tus fondos</label>
+                        <select id="f-purpose" name="purpose" class="form-select" required>
+                            <option value="Wealth Creation">Creación de Riqueza</option>
+                            <option value="Savings for Future">Ahorros para el Futuro</option>
+                            <option value="Returns">Generar retornos inmediatos</option>
                         </select>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary-custom w-100 fs-5 mt-2">
+                <!-- Grupo 3: Horizonte y expectativas -->
+                <div class="field-group">
+                    <div class="field-group-title">
+                        <span class="fg-icon"><i class="bi bi-hourglass-split"></i></span> Horizonte y expectativas
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="f-duration"><i class="bi bi-clock"></i>Horizonte de tiempo</label>
+                            <select id="f-duration" name="duration" class="form-select" required>
+                                <option value="Less than 1 year">Menos de 1 año</option>
+                                <option value="1-3 years">1 a 3 años</option>
+                                <option value="3-5 years">3 a 5 años</option>
+                                <option value="More than 5 years">Más de 5 años</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="f-expect"><i class="bi bi-percent"></i>Rendimiento esperado</label>
+                            <select id="f-expect" name="expect" class="form-select" required>
+                                <option value="10%-20%">10% - 20% anual</option>
+                                <option value="20%-30%">20% - 30% anual</option>
+                                <option value="30%-40%">30% - 40% anual</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary-custom w-100 fs-5 mt-1">
                     <i class="bi bi-cpu-fill me-2"></i>Generar Portafolio
                 </button>
+                <p class="text-center text-muted small mt-3 mb-0">
+                    <i class="bi bi-lock-fill me-1"></i>Tus respuestas solo se usan para calcular tu perfil.
+                </p>
             </form>
-        </div>
+        </section>
         {% endif %}
     </div>
 </body>
